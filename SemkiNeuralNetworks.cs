@@ -12,6 +12,7 @@ namespace SemkiNeuralNetworks
 		public string datasetPath = "./dataset";
 		public int maxNeurons;
 		private Random random = new Random();
+    	public double learningRate = .5d;
 
 		public void Randomize()
 		{
@@ -36,7 +37,7 @@ namespace SemkiNeuralNetworks
 			{
 				for (int j = 0; j < maxNeurons; j++)
 				{
-					for (int k = 0; k < 10; k++)
+					for (int k = 0; k < maxNeurons; k++)
 					{
 						weights[i,j,k] = 0;	
 					}	
@@ -90,12 +91,12 @@ namespace SemkiNeuralNetworks
 					{
 						continue;	
 					}
-					neurons[i,j] = 0;
+					// neurons[i,j] = 0;
 					for (int k = 0; k < neuronsConfig[i - 1]; k++)
 					{
-						neurons[i,j] += weights[i - 1,k,j] * neurons[i - 1,k];
+						neurons[i,j] = weights[i - 1,k,j] * neurons[i - 1,k];
 					}
-					neurons[i,j] = LogSigmoid(neurons[i,j]);
+					// neurons[i,j] = LogSigmoid(neurons[i,j]);
 				}	
 			}
 			Console.WriteLine("Log: Calculated neurons");
@@ -113,14 +114,17 @@ namespace SemkiNeuralNetworks
 			double error = 0.0;
 			for (int i = 0; i < correctAnswer.Length; i++)
 			{
+        		// error += 1.0 * correctAnswer[i] - neurons[neuronsConfig.Length - 1, i];
 				error += 0.5 * Math.Pow(correctAnswer[i] - neurons[neuronsConfig.Length - 1, i], 2);
 			}
+      		// error /= correctAnswer.Length;
+      		// error = LogSigmoid(error);
 			return error;
 		}
 
 		public void ResetNeurons()
 		{
-			for (int i = 0; i < neuronsConfig.Length; i++)
+      		for (int i = 0; i < neuronsConfig.Length; i++)
 			{
 				for (int j = 0; j < maxNeurons; j++)
 				{

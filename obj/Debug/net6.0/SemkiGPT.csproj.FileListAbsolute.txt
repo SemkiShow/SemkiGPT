@@ -1,0 +1,14 @@
+D:\C#\SemkiGPT\obj\Debug\net6.0\SemkiGPT.GeneratedMSBuildEditorConfig.editorconfig
+D:\C#\SemkiGPT\obj\Debug\net6.0\SemkiGPT.AssemblyInfoInputs.cache
+D:\C#\SemkiGPT\obj\Debug\net6.0\SemkiGPT.AssemblyInfo.cs
+D:\C#\SemkiGPT\obj\Debug\net6.0\SemkiGPT.csproj.CoreCompileInputs.cache
+D:\C#\SemkiGPT\bin\Debug\net6.0\SemkiGPT.exe
+D:\C#\SemkiGPT\bin\Debug\net6.0\SemkiGPT.deps.json
+D:\C#\SemkiGPT\bin\Debug\net6.0\SemkiGPT.runtimeconfig.json
+D:\C#\SemkiGPT\bin\Debug\net6.0\SemkiGPT.dll
+D:\C#\SemkiGPT\bin\Debug\net6.0\SemkiGPT.pdb
+D:\C#\SemkiGPT\obj\Debug\net6.0\SemkiGPT.dll
+D:\C#\SemkiGPT\obj\Debug\net6.0\refint\SemkiGPT.dll
+D:\C#\SemkiGPT\obj\Debug\net6.0\SemkiGPT.pdb
+D:\C#\SemkiGPT\obj\Debug\net6.0\SemkiGPT.genruntimeconfig.cache
+D:\C#\SemkiGPT\obj\Debug\net6.0\ref\SemkiGPT.dll

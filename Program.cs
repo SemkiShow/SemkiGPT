@@ -13,10 +13,10 @@ namespace SemkiGPT
 		static Random random = new Random();
 		static string divider = " ";
 
-		static void Backpropagation(Perceptron perceptron, string[] datasetFiles)
+		static double[] Init(Perceptron perceptron, string[] datasetFiles)
 		{
 			// Getting random dataset file
-			string randomFile = datasetFiles[random.Next(datasetFiles.Length)];
+			string randomFile = datasetFiles[random.Next(0, datasetFiles.Length)];
 			Console.WriteLine("Log: Got a random dataset file");
 			
 			// Reading randomFile
@@ -46,14 +46,14 @@ namespace SemkiGPT
 					}
 				}
 				perceptron.neurons[0,i] = 1d / symbolIndex;
-				if (symbolIndex == symbols.Length)
-				{
-					Console.ForegroundColor = ConsoleColor.Red;
-					string errorMessage = "Error: Symbol doesn't exist! (at layer 1)";
-					Console.WriteLine(errorMessage);
-					Console.ResetColor();
-					File.AppendAllText("Errors.log", "\n" + DateTime.Now + " " + errorMessage + " " + randomStrings);
-				}
+				// if (symbolIndex == symbols.Length)
+				// {
+				// 	Console.ForegroundColor = ConsoleColor.Red;
+				// 	string errorMessage = "Error: Symbol doesn't exist! (at layer 1)";
+				// 	Console.WriteLine(errorMessage);
+				// 	Console.ResetColor();
+				// 	File.AppendAllText("Errors.log", "\n" + DateTime.Now + " " + errorMessage + " " + randomStrings);
+				// }
 			}
 			Console.WriteLine("Log: Wrote the first encoded string to the 1st neuron layer");
 			
@@ -70,26 +70,45 @@ namespace SemkiGPT
 					}	
 				}
 				correctAnswer[i] = 1d / symbolIndex;
-				if (symbolIndex == symbols.Length)
-				{
-					Console.ForegroundColor = ConsoleColor.Red;
-					string errorMessage = "Error: Symbol doesn't exist! (at layer " + perceptron.neuronsConfig.Length + ")";
-					Console.WriteLine(errorMessage);
-					Console.ResetColor();
-					File.AppendAllText("Errors.log", "\n" + DateTime.Now + " " + errorMessage + " " + randomStrings);
-				}
-
+				// if (symbolIndex == symbols.Length)
+				// {
+				// 	Console.ForegroundColor = ConsoleColor.Red;
+				// 	string errorMessage = "Error: Symbol doesn't exist! (at layer " + perceptron.neuronsConfig.Length + ")";
+				// 	Console.WriteLine(errorMessage);
+				// 	Console.ResetColor();
+				// 	File.AppendAllText("Errors.log", "\n" + DateTime.Now + " " + errorMessage + " " + randomStrings);
+				// }
 			}
 			Console.WriteLine("Log: Got the correct answer");
-			
+			return correctAnswer;
+    }
+
+    static Perceptron Backpropagation(Perceptron clean_perceptron, double[] correctAnswer)
+    {
+      Perceptron perceptron = clean_perceptron;
+
 			// Calculating neurons
 			perceptron.CalculateNeurons();
 			
 			// Backpropagation
-			
+	    for (int i = 0; i < perceptron.neuronsConfig.Length; i++)
+	    {
+	        for (int j = 0; j < perceptron.neuronsConfig[0]; j++)
+	        {
+	            for (int k = 0; k < perceptron.neuronsConfig[0]; k++)
+	            {
+	                perceptron.weights[i,j,k] += perceptron.weights[i,j,k] - (perceptron.learningRate * (perceptron.neurons[i,k] / perceptron.neurons[i,j]));
+	            }
+	        }
+	    }	
+
+      // Randomised learning
+      // perceptron.weights[random.Next(0, perceptron.neuronsConfig.Length), random.Next(0, perceptron.maxNeurons), random.Next(0, perceptron.maxNeurons)] = random.NextDouble();
 
 			// Printing total error after backpropagation
 			Console.WriteLine("Total error: " + perceptron.GetTotalError(correctAnswer));
+
+      return perceptron;
 		}
 
 		static void CorrectDataset(Perceptron perceptron, bool isHTML = false)
@@ -136,10 +155,10 @@ namespace SemkiGPT
 			Perceptron perceptron = new Perceptron();
 			Console.WriteLine("Log: Created a perceptron instance");
 
-			perceptron.neuronsConfig = new int[10000];
-			for (int i = 0; i < 10000; i++)
+			perceptron.neuronsConfig = new int[1000];
+			for (int i = 0; i < perceptron.neuronsConfig.Length; i++)
 			{
-				perceptron.neuronsConfig[i] = 50;	
+				perceptron.neuronsConfig[i] = 100;	
 			}
 			Console.WriteLine("Log: Set neurons config");
 
@@ -165,11 +184,19 @@ namespace SemkiGPT
 			// Getting dataset files
 			string[] datasetFiles = Directory.GetFiles(perceptron.datasetPath);
 			Console.WriteLine("Log: Got dataset files");
+      
+      // Init
+      double[] correctAnswer = Init(perceptron, datasetFiles);
 
 			for (int i = 1; i <= 100; i++)
 			{
 				Console.WriteLine("-----Log: Iteration " + i + "-----");
-				Backpropagation(perceptron, datasetFiles);
+				Perceptron randomizedPerceptron = Backpropagation(perceptron, correctAnswer);
+        
+        if (randomizedPerceptron.GetTotalError(correctAnswer) > perceptron.GetTotalError(correctAnswer))
+        {
+            perceptron = randomizedPerceptron;
+        }
 			}
 			Console.WriteLine("Log: Learning ended");
 			// CorrectDataset(perceptron, true);
